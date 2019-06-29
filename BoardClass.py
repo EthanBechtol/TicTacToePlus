@@ -4,8 +4,23 @@ class Board:
         self._size = size
         self._moves = 0
 
+        # In order to handle diagonal wins
+        if self._size % 2 == 0:
+            self._parity = "even"
+        else:
+            self._parity = "odd"
+
     def get_board(self):
         return self._tiles
+
+    @staticmethod
+    def _generate_blank_rows(size: int):
+        tiles = []
+        blank_row = [None for i in range(int(size))]
+        for i in range(int(size)):
+            tiles.append(blank_row[:])
+
+        return tiles
 
     def print_board(self, show_cordinates=True):
         # Underline and underline_end character modifier sequences
@@ -72,14 +87,42 @@ class Board:
         else:
             raise ValueError("Invalid argument: {}. Leave argument blank to keep current size or enter a new size int.")
 
-    @staticmethod
-    def _generate_blank_rows(size: int):
-        tiles = []
-        blank_row = [None for i in range(int(size))]
-        for i in range(int(size)):
-            tiles.append(blank_row[:])
+    # Win condition check methods
+    def check_win_horizontal(self, row: int, column: int):
+        win_char = self._tiles[row][column]
+        if win_char is not None:
+            if all([x == win_char for x in self._tiles[row]]):
+                return True
+        return False
 
-        return tiles
+    def check_win_vertical(self, row: int, column: int):
+        win_char = self._tiles[row][column]
+        if win_char is not None:
+            for row in self._tiles:
+                if row[column] != win_char:
+                    return False
+            return True
+        return False
+
+    def check_win_slant_left(self, row: int, column: int):
+        win_char = self._tiles[row][column]
+        if (win_char is not None) and (row == column):
+            for index, row_array in enumerate(self._tiles):
+                if row_array[index] != win_char:
+                    return False
+            return True
+        return False
+
+    def check_win_slant_right(self, row: int, column: int):
+        win_char = self._tiles[row][column]
+        if win_char is not None:
+            current_column = self._size - 1
+            for row in self._tiles:
+                if row[current_column] != win_char:
+                    return False
+                current_column -= 1
+            return True
+        return False
 
 
 class OccupiedSpaceError(Exception):
