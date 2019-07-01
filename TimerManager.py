@@ -1,4 +1,4 @@
-from PlayerTImer import PlayerTimer
+from PlayerTimer import PlayerTimer
 import time
 
 
