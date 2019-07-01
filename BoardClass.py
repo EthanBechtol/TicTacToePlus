@@ -22,25 +22,38 @@ class Board:
 
         return tiles
 
+    def _print_vertical_coords(self):
+        offset = len(str(self._size))
+        coords = ["{number:$>{width}}".format(number=num, width=offset) for num in range(self._size)]
+
+        for index in range(offset):
+            first_number = True
+            last_number = False
+            ul = "\033[4m" if index == offset - 1 else ''
+            ule = "\033[0m" if index == offset - 1 else ''
+
+            print(ul + "{space:{offset}}│".format(space=' ', offset=offset) + ule, end='')
+            for coord in coords:
+
+                separator = '│' if not last_number else ' '
+                target_num = coord[index] if coord[index] != '$' else ' '
+                if first_number:
+                    separator = ''
+                    first_number = False
+                print(ul + "{}{}".format(separator, target_num) + ule, end='')
+                if coord == (self._size - 1):
+                    print(ul + " " + ule, end='')
+            print()
+
     def print_board(self, show_cordinates=True):
         # Underline and underline_end character modifier sequences
         ul = "\033[4m"
         ule = "\033[0m"
+        offset = len(str(self._size))
 
         # Print first row with cordinates
         if show_cordinates:
-            first_number = True
-            last_number = False
-            print(ul + " |" + ule, end='')
-            for column in range(self._size):
-                separator = '|' if not last_number else ' '
-                if first_number:
-                    separator = ''
-                    first_number = False
-                print(ul + "{}{}".format(separator, column) + ule, end='')
-                if column == (self._size - 1):
-                    print(ul + " " + ule, end='')
-            print()
+            self._print_vertical_coords()
 
         # Print each individual row
         for row in range(self._size):
@@ -52,7 +65,7 @@ class Board:
                     start = False
                     # Add row number if show_cordinates enabled
                     if show_cordinates:
-                        print("{}│".format(row), end='')
+                        print("{row: >{offset}}│".format(row=row, offset=offset), end='')
                 print(ul + "{}{}".format(separator, char) + ule, end='')
                 if column == (self._size - 1):
                     print("│", end='')
