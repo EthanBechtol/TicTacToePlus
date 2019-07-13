@@ -1,14 +1,12 @@
+from TimerManager import TimerManager
+
+
 class Board:
     def __init__(self, size: int = 3):
         self._tiles = self._generate_blank_rows(size)
         self._size = size
         self._moves = 0
-
-        # In order to handle diagonal wins
-        if self._size % 2 == 0:
-            self._parity = "even"
-        else:
-            self._parity = "odd"
+        self.winner = None
 
     def get_board(self):
         return self._tiles
@@ -71,13 +69,15 @@ class Board:
                     print("│", end='')
             print()
 
-    def set_tile(self, row: int, column: int, char: str):
+    def set_tile(self, row: int, column: int, char: str, check_win=True):
         if self._tiles[row][column] is not None:
             raise OccupiedSpaceError
         else:
             self._tiles[row][column] = char
             self._moves += 1
-            # TODO check for win here & end game
+
+            if self.check_any_win(row, column):
+                self.winner = char
 
     def check_capacity(self, verify=False):
         # Verify parameter inspects each individual space to make sure nothing was changed illegally.
@@ -101,6 +101,13 @@ class Board:
             raise ValueError("Invalid argument: {}. Leave argument blank to keep current size or enter a new size int.")
 
     # Win condition check methods
+    def check_any_win(self, row: int, column: int):
+        win_status = any([self.check_win_horizontal(row, column),
+                          self.check_win_vertical(row, column),
+                          self.check_win_slant_left(row, column),
+                          self.check_win_slant_right(row, column)])
+        return win_status
+
     def check_win_horizontal(self, row: int, column: int):
         win_char = self._tiles[row][column]
         if win_char is not None:
@@ -139,4 +146,11 @@ class Board:
 
 
 class OccupiedSpaceError(Exception):
+    pass
+
+
+class InvalidInputError(Exception):
+    pass
+
+class BoardFullError(Exception):
     pass
