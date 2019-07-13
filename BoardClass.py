@@ -100,6 +100,20 @@ class Board:
         else:
             raise ValueError("Invalid argument: {}. Leave argument blank to keep current size or enter a new size int.")
 
+    def print_endscreen(self, timer_data: TimerManager):
+        timers = timer_data.get_timers()
+
+        print()
+        print(" --- GAME OVER! ---")
+        self.print_board()
+        winner = self.winner if self.winner is not None else "Nobody"
+        print(f"{winner} won the game!\n"
+              "Statistics:\n"
+              f"\tMoves made: {self._moves}")
+        print("\tHow long players spent making moves:")
+        for player, time in timers.items():
+            print(f"\t\t{player}: {time:.3f} seconds")
+
     # Win condition check methods
     def check_any_win(self, row: int, column: int):
         win_status = any([self.check_win_horizontal(row, column),
