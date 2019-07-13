@@ -24,8 +24,14 @@ class TimerManager:
             raise TimerNotFoundError("Timer {} does not exist".format(player_char))
 
     def get_time(self, player_char: str):
-        if player_char in self._move_timers:
+        if player_char in self._move_timers.items():
             return self._move_timers[player_char].timer
+
+    def get_timers(self):
+        timers = {}
+        for player, data in self._move_timers.items():
+            timers[player] = data.timer
+        return timers
 
 
 class TimerNotFoundError(Exception):
