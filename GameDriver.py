@@ -3,7 +3,13 @@ from TimerManager import TimerManager
 
 
 def init_players():
-    num_players = int(input("Enter the desired number of players:\n"))
+    valid_player_num = False
+    while not valid_player_num:
+        num_players = int(input("Enter the desired number of players:\n"))
+        if num_players >= 2:
+            valid_player_num = True
+        else:
+            print("The number of players must be 2 or above!")
     players = []
     for index, player in enumerate(range(num_players)):
         valid_char = False
@@ -47,6 +53,19 @@ def process_turn(game: Board, players: list, player_turn: int, timers: TimerMana
             return player_turn
 
 
+def init_board(board: Board):
+    valid_board_size = False
+    board_size = 3
+    while not valid_board_size:
+        board_size = int(input("How big would you like the board to be? (Enter an integer)\n"))
+        if board_size >= 3:
+            valid_board_size = True
+            board.reset(board_size)
+        else:
+            print("The board size must be 3 or greater.")
+    return board
+
+
 def main():
     running = True
     game = Board()
@@ -56,10 +75,9 @@ def main():
     while running:
         in_game = True
 
-        # Initialize player list
+        # Initialize player list & board
         players = init_players()
-        board_size = int(input("How big would you like the board to be? (Enter an integer)\n"))
-        game.reset(board_size)
+        init_board(game)
 
         while in_game:
             try:
