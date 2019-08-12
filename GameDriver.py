@@ -24,14 +24,14 @@ def init_players():
     return players
 
 
-def process_turn(game: Board, players: list, player_turn: int, timers: TimerManager):
+def process_turn(game: Board, players: list, player_turn: int, timers: TimerManager, underlining):
     valid_move = False
     while not valid_move:
         if game.check_capacity() == 0:
             raise BoardFullError
 
         print("Current board:")
-        game.print_board()
+        game.print_board(underlining=underlining)
 
         timers.start_timer(players[player_turn])
         try:
@@ -66,6 +66,18 @@ def init_board(board: Board):
     return board
 
 
+def check_underlining():
+    ul = "\033[4m"
+    ule = "\033[0m"
+    print("Before we begin, does the following look normal and underlined? (Enter 'yes' or 'y' if so)")
+    print("\t" + ul + "Underlined text test" + ule)
+    answer = input()
+    if answer in ("yes", 'y'):
+        return True
+    else:
+        return False
+
+
 def main():
     running = True
     game = Board()
@@ -75,14 +87,15 @@ def main():
     while running:
         in_game = True
 
-        # Initialize player list & board
+        # Initialize player list, board, and if the user's output supports underlining
         players = init_players()
         init_board(game)
+        underlining = check_underlining()
 
         while in_game:
             try:
                 # Processes the turn AND advances who's turn it is.
-                player_turn = process_turn(game, players, player_turn, player_timers)
+                player_turn = process_turn(game, players, player_turn, player_timers, underlining)
             except BoardFullError:
                 print("All spaces have become occupied!")
                 in_game = False

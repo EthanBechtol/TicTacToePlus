@@ -20,15 +20,15 @@ class Board:
 
         return tiles
 
-    def _print_vertical_coords(self):
+    def _print_vertical_coords(self, underlining=True):
         offset = len(str(self._size))
         coords = ["{number:$>{width}}".format(number=num, width=offset) for num in range(self._size)]
 
         for index in range(offset):
             first_number = True
             last_number = False
-            ul = "\033[4m" if index == offset - 1 else ''
-            ule = "\033[0m" if index == offset - 1 else ''
+            ul = "\033[4m" if index == offset - 1 and underlining else ''
+            ule = "\033[0m" if index == offset - 1 and underlining else ''
 
             print(ul + "{space:{offset}}│".format(space=' ', offset=offset) + ule, end='')
             for coord in coords:
@@ -43,15 +43,15 @@ class Board:
                     print(ul + " " + ule, end='')
             print()
 
-    def print_board(self, show_cordinates=True):
+    def print_board(self, show_coordinates=True, underlining=True):
         # Underline and underline_end character modifier sequences
-        ul = "\033[4m"
-        ule = "\033[0m"
+        ul = "\033[4m" if underlining else ''
+        ule = "\033[0m" if underlining else ''
         offset = len(str(self._size))
 
         # Print first row with cordinates
-        if show_cordinates:
-            self._print_vertical_coords()
+        if show_coordinates:
+            self._print_vertical_coords(underlining)
 
         # Print each individual row
         for row in range(self._size):
@@ -62,7 +62,7 @@ class Board:
                 if start:
                     start = False
                     # Add row number if show_cordinates enabled
-                    if show_cordinates:
+                    if show_coordinates:
                         print("{row: >{offset}}│".format(row=row, offset=offset), end='')
                 print(ul + "{}{}".format(separator, char) + ule, end='')
                 if column == (self._size - 1):
