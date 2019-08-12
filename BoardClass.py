@@ -97,6 +97,7 @@ class Board:
             self._tiles = self._generate_blank_rows(self._size)
         elif isinstance(size, int):
             self._tiles = self._generate_blank_rows(size)
+            self._size = size
         else:
             raise ValueError("Invalid argument: {}. Leave argument blank to keep current size or enter a new size int.")
 
